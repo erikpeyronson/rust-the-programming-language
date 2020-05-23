@@ -1,3 +1,6 @@
-# Rust the programming language
+# Rust the Programming Language
 
-A repository containing the exercises from the book written down as an exercise.
+A repository containing the code examples in the book "Rust the Programming Language" written down to practice while reading the book.
+
+Each chapter is organized in a separate directory. The directories prefixed with 
+"exercise-n" are my solutions to the suggested exercises..

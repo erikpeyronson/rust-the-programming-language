@@ -10,6 +10,7 @@ enum Coin {
     Dime,
     Quarter(UsState),
 }
+
 fn main() {
     let quarter = Coin::Quarter(UsState::Alabama);
     println!("quarter is {} cents", value_in_cents(quarter));

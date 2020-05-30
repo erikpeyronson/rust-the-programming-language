@@ -53,7 +53,3 @@ fn main() {
         some_number, some_string, absend_number
     );
 }
-
-// fn route(IpAddrKind) {
-
-// }

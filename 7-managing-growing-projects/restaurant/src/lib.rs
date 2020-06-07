@@ -1,54 +1,10 @@
-// #[cfg(test)]
-// mod tests {
-//     #[test]
-//     fn it_works() {
-//         assert_eq!(2 + 2, 4);
-//     }
-// }
-
-mod front_of_house {
-    pub mod hosting {
-        pub fn add_to_waitlist() {}
-        pub fn seat_at_table() {}
-    }
-
-    pub mod serving {
-        fn take_order() {}
-       pub  fn serve_order() {}
-        fn take_payment() {}
-    }
-}
-
-mod back_of_house {
-    // Struct fields are must be explicitly declared public 
-    pub struct Breakfast {
-        pub toast: String,
-        seasonal_fruit: String,
-    }
-
-    // Enum fields are automatically public
-    pub enum Appetizer {
-        Soup,
-        Salad,
-    }
-
-    impl Breakfast {
-        pub fn summer(toast: &str) -> Breakfast {
-            Breakfast {
-                toast: String::from(toast),
-                seasonal_fruit: String::from("peaches"),
-            }
-        }
-    }
-
-    fn fix_incorrect_order() {
-        cook_order;
-        super::front_of_house::serving::serve_order();
-    }
-    fn cook_order() {}
-}
+mod back_of_house;
+mod front_of_house;
 
 use crate::front_of_house::hosting;
+
+// Compining pub and use makes the new name public
+// pub use crate::front_of_house::hosting;
 
 pub fn eat_at_restaurant() {
     // Absolute path

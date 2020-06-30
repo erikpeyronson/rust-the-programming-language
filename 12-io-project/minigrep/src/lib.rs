@@ -9,13 +9,20 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn new(args: &[String]) -> Result<Config, &'static str> {
-        if args.len() < 3 {
-            return Err("Not enough arguments");
-        }
+    // pub fn new(mut args: std::env::Args) -> Result<Config, &'static str> {
+    pub fn new(mut args: impl Iterator<Item = String>) -> Result<Config, &'static str> {
+        args.next();
 
-        let query = args[1].clone();
-        let filename = args[2].clone();
+        let query = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get a query string"),
+        };
+
+        let filename = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get a filename string"),
+        };
+
         let case_sensitive = env::var("CASE_INSENSITIVE").is_err();
 
         Ok(Config {
@@ -50,8 +57,10 @@ pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
             results.push(line);
         }
     }
-
-    results
+    contents
+        .lines()
+        .filter(|line| line.contains(query))
+        .collect()
 }
 
 pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
@@ -73,12 +82,13 @@ mod tests {
     use super::*;
     #[test]
     fn new() {
-        let config = Config::new(&[
+        let args = vec![
             String::from("minigrep"),
             String::from("test_arg"),
             String::from("test_filename"),
-        ])
-        .unwrap();
+        ];
+
+        let config = Config::new(args.into_iter()).unwrap();
 
         assert_eq!(config.filename, "test_filename");
         assert_eq!(config.query, "test_arg");
@@ -86,7 +96,8 @@ mod tests {
 
     #[test]
     fn new_error_when_not_enough_args() {
-        let result = Config::new(&[String::from("minigrep"), String::from("test_arg")]);
+        let args = vec![String::from("minigrep"), String::from("test_arg")];
+        let result = Config::new(args.into_iter());
         assert!(
             result.is_err(),
             "New did not return error with two arguments"
@@ -95,12 +106,12 @@ mod tests {
 
     #[test]
     fn run_fails_when_file_is_missing() {
-        let config = Config::new(&[
+        let args = vec![
             String::from("minigrep"),
             String::from("test_arg"),
-            String::from("Non_existing_file"),
-        ])
-        .unwrap();
+            String::from("non_existing_file"),
+        ];
+        let config = Config::new(args.into_iter()).unwrap();
         let result = run(config);
         assert!(
             result.is_err(),
